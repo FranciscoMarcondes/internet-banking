@@ -1,6 +1,5 @@
 package com.capgemini.internet.banking.services.impl;
 
-import com.capgemini.internet.banking.dto.SimpleHistoryResponse;
 import com.capgemini.internet.banking.enums.OperationType;
 import com.capgemini.internet.banking.models.ClientModel;
 import com.capgemini.internet.banking.models.TransactionHistoryModel;
@@ -44,11 +43,6 @@ public class TransactionHistoryImpl implements TransactionHistoryService {
     @Override
     public List<TransactionHistoryModel> getHistoryByDate(LocalDate initDate, LocalDate endDate) {
         return transactionHistoryRepository.getHistoryByDate(initDate, endDate);
-    }
-
-    @Override
-    public List<SimpleHistoryResponse> getHistoryDateSimple(LocalDate initDate, LocalDate endDate) {
-        return transactionHistoryRepository.getHistoryByDateSimple(initDate, endDate);
     }
 
     @Override
