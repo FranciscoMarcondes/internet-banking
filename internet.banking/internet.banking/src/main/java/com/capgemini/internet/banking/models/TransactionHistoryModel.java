@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -32,7 +33,10 @@ public class TransactionHistoryModel implements Serializable {
     @Column
     private BigDecimal deposit;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
+    @Column
+    private BigDecimal balance;
+
+    @DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime transactionDate;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

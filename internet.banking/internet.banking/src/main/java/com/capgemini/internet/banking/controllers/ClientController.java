@@ -1,6 +1,10 @@
 package com.capgemini.internet.banking.controllers;
 
 import com.capgemini.internet.banking.dto.ClientDto;
+import com.capgemini.internet.banking.dto.TransactionDeposit;
+import com.capgemini.internet.banking.dto.TransactionHistoryDto;
+import com.capgemini.internet.banking.dto.TransactionWithDraw;
+import com.capgemini.internet.banking.enums.OperationType;
 import com.capgemini.internet.banking.models.ClientModel;
 import com.capgemini.internet.banking.models.TransactionHistoryModel;
 import com.capgemini.internet.banking.services.ClientService;
@@ -64,33 +68,40 @@ public class ClientController {
         return ResponseEntity.status(HttpStatus.CREATED).body(clientModel);
     }
 
-    @RequestMapping(value = "/{value}", method = RequestMethod.POST, produces = "application/json")
-    public ResponseEntity<Object> withdraw(@PathVariable(value = "clientId") Long clientId,
-                                           @PathVariable(value = "value") Long value){
-        log.debug("POST withdraw client {} ", clientId);
-        Optional<ClientModel> resultClient = clientService.findByid(clientId);
-        if(!resultClient.isPresent()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found");
-        }
+    @RequestMapping(path = "/withdraw", method = RequestMethod.PUT, produces = "application/json")
+    public ResponseEntity<Object> withdraw(@RequestBody @Valid TransactionWithDraw transaction){
 
-        var clientModel = new ClientModel();
-        var transaction = new TransactionHistoryModel();
-        BeanUtils.copyProperties(resultClient, clientModel);
-        ClientModel clientModelNewBalance = clientService.withdraw(resultClient, value);
+        log.debug("POST withdraw client {} ", transaction.getClientId());
+        log.info("Checking client ", transaction.getClientId());
 
-        // Criando um novo historico
-        transaction.setClient(clientModelNewBalance);
-        transaction.setWithdraw(BigDecimal.valueOf(value));
-        transaction.setDeposit(BigDecimal.ZERO);
-        transaction.setTransactionDate(LocalDateTime.now());
+        Optional<ClientModel> resultClient = clientService.findByid(transaction.getClientId());
+        clientService.validateRulesWithDraw(transaction, resultClient);
 
-        clientService.save(clientModelNewBalance);
-        transactionHistoryService.save(transaction);  //TODO Corrir metodo.
+        var clientModelNewBalance = clientService.withdraw(resultClient, transaction.getWithDraw());
+        var resultClientModel = clientService.save(clientModelNewBalance);
+        var TransactionHistory =transactionHistoryService.CreateNewHistory(transaction.getWithDraw(), clientModelNewBalance, OperationType.WITHDRAW);
 
-        log.debug("POST saveClient clientId save {}" , clientModel.getClientId());
-        log.info("Client saved successfully cliendId {}", clientModel.getClientId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(clientModel);
+        log.debug("PUT withdraw balance updated successfully {}" , TransactionHistory.getTransactionId());
+        log.info("balance updated successfully {}", TransactionHistory.getTransactionId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(resultClientModel);
     }
 
+    @RequestMapping(path = "/deposit", method = RequestMethod.PUT, produces = "application/json")
+    public ResponseEntity<Object> deposit(@RequestBody @Valid TransactionDeposit transaction){
+
+        log.debug("POST deposit client {} ", transaction.getClientId());
+        log.info("Checking client ", transaction.getClientId());
+
+        Optional<ClientModel> resultClient = clientService.findByid(transaction.getClientId());
+        clientService.validateRulesDeposit(transaction, resultClient);
+
+        var clientModelNewBalance = clientService.deposit(resultClient, transaction.getDeposit());
+        var resultClientModel = clientService.save(clientModelNewBalance);
+        var TransactionHistory = transactionHistoryService.CreateNewHistory(transaction.getDeposit(), clientModelNewBalance, OperationType.DEPOSIT);
+
+        log.debug("PUT deposit balance updated successfully {}" , TransactionHistory.getTransactionId());
+        log.info("balance updated successfully {}", TransactionHistory.getTransactionId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(resultClientModel);
+    }
 
 }

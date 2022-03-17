@@ -12,7 +12,7 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TransactionHistoryDto {
     private Long transactionId;
-    private Long clientId;
     private BigDecimal withdraw;
     private BigDecimal deposit;
+    private BigDecimal balance;
 }

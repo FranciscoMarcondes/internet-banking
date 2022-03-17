@@ -8,11 +8,15 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,16 +30,20 @@ public class TransactionHistoryController {
     @Autowired
     TransactionHistoryService historyService;
 
-/*    @GetMapping
-    public ResponseEntity<Object> geAlltHistoryClients() {
-        List<TransactionHistoryModel> resultHistory = historyService.geAlltHistoryClients();
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<Object> getHistoryDate(@RequestParam("initDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate initDate,
+                                                 @Param("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
+       if(endDate == null ){
+           endDate = initDate.plusDays(1);
+       }
+        List<TransactionHistoryModel> resultHistory = historyService.getHistoryByDate(initDate, endDate);
         if (resultHistory.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Clients not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("History not found.");
         }
         return ResponseEntity.status(HttpStatus.OK).body(resultHistory);
-    }*/
+    }
 
-    @PostMapping
+/*    @PostMapping
     public ResponseEntity<Object> saveClient(@RequestBody @Valid TransactionHistoryDto historyDto){
         log.debug("POST saveClient clientDto received {} ", historyDto.toString());
         var historyModel = new TransactionHistoryModel();
@@ -45,5 +53,5 @@ public class TransactionHistoryController {
         log.debug("POST saveClient clientId save {}" , historyModel.getTransactionId());
         log.info("Client saved successfully cliendId {}", historyModel.getTransactionId());
         return ResponseEntity.status(HttpStatus.CREATED).body(historyModel);
-    }
+    }*/
 }
