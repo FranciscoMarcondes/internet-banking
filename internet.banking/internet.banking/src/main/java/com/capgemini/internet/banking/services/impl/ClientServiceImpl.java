@@ -5,17 +5,18 @@ import com.capgemini.internet.banking.dto.TransactionWithDraw;
 import com.capgemini.internet.banking.models.ClientModel;
 import com.capgemini.internet.banking.repositories.ClientRepository;
 import com.capgemini.internet.banking.services.ClientService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+@Log4j2
 @Service
 public class ClientServiceImpl implements ClientService {
 
@@ -72,6 +73,25 @@ public class ClientServiceImpl implements ClientService {
     public ClientModel deposit(Optional<ClientModel> resultClient, BigDecimal deposit) {
         BigDecimal newBalance = resultClient.get().getBalance().add(deposit);
         return getNewClientModel(resultClient, newBalance);
+    }
+
+    @Override
+    public ResponseEntity<Object> validAndGetResponseEntityOneClient(Optional<ClientModel> clientModelOptional) {
+        if(!clientModelOptional.isPresent()){
+            log.info("Client not found {}");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found");
+        }else{
+            return ResponseEntity.status(HttpStatus.OK).body(clientModelOptional.get());
+        }
+    }
+
+    @Override
+    public ResponseEntity<Object> getObjectResponseEntityAllClientes(List<ClientModel> resultClients) {
+            if (resultClients.isEmpty()) {
+                log.info("Clients not found {}");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Clients not found.");
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(resultClients);
     }
 
     @Override

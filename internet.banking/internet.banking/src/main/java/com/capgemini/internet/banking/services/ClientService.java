@@ -23,4 +23,8 @@ public interface ClientService {
     ResponseEntity<Object>  validateRulesDeposit(TransactionDeposit transaction, Optional<ClientModel> resultClient);
 
     ClientModel deposit(Optional<ClientModel> resultClient, BigDecimal deposit);
+
+    ResponseEntity<Object> validAndGetResponseEntityOneClient(Optional<ClientModel> clientModelOptional);
+
+    ResponseEntity<Object> getObjectResponseEntityAllClientes(List<ClientModel> resultClients);
 }

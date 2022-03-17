@@ -2,13 +2,12 @@ package com.capgemini.internet.banking.controllers;
 
 import com.capgemini.internet.banking.dto.ClientDto;
 import com.capgemini.internet.banking.dto.TransactionDeposit;
-import com.capgemini.internet.banking.dto.TransactionHistoryDto;
 import com.capgemini.internet.banking.dto.TransactionWithDraw;
 import com.capgemini.internet.banking.enums.OperationType;
 import com.capgemini.internet.banking.models.ClientModel;
-import com.capgemini.internet.banking.models.TransactionHistoryModel;
 import com.capgemini.internet.banking.services.ClientService;
 import com.capgemini.internet.banking.services.TransactionHistoryService;
+import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.log4j.Log4j2;
@@ -19,8 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +25,7 @@ import java.util.Optional;
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/client")
+@Api(value = "Internet Banking - Client function")
 @Tag(name = "Client Service", description = "API for handling customer data")
 public class ClientController {
 
@@ -37,26 +35,35 @@ public class ClientController {
     @Autowired
     TransactionHistoryService transactionHistoryService;
 
+    @ApiOperation(value = "find All clients.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "Not found"),
+            @ApiResponse(code = 200, message = "Ok"),
+    })
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<Object> getAllClients() {
+        log.debug("Get, getAllClients, looking for all clients {}");
         List<ClientModel> resultClients = clientService.findAll();
-        if (resultClients.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Clients not found.");
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(resultClients);
+        return clientService.getObjectResponseEntityAllClientes(resultClients);
     }
 
+    @ApiOperation(value = "find one client by id.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "Not found"),
+            @ApiResponse(code = 200, message = "Ok")
+    })
     @RequestMapping(value = "/{clientId}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<Object> getOneClient(@PathVariable(value = "clientId") Long clientId){
+        log.debug("Get, getOneClient, looking for one client {}");
         Optional<ClientModel> clientModelOptional = clientService.findByid(clientId);
-        if(!clientModelOptional.isPresent()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found");
-        }else{
-            return ResponseEntity.status(HttpStatus.OK).body(clientModelOptional.get());
-        }
+        return clientService.validAndGetResponseEntityOneClient(clientModelOptional);
     }
 
-
+    @ApiOperation(value = "Create client.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 500, message = "Error"),
+            @ApiResponse(code = 201, message = "Created")
+    })
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     public ResponseEntity<Object> saveClient(@RequestBody @Valid ClientDto clientDto){
         log.debug("POST saveClient clientDto received {} ", clientDto.toString());
@@ -68,6 +75,12 @@ public class ClientController {
         return ResponseEntity.status(HttpStatus.CREATED).body(clientModel);
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 200, message = "Ok")
+    })
+    @ApiOperation(value = "withdraw function.")
     @RequestMapping(path = "/withdraw", method = RequestMethod.PUT, produces = "application/json")
     public ResponseEntity<Object> withdraw(@RequestBody @Valid TransactionWithDraw transaction){
 
@@ -78,7 +91,7 @@ public class ClientController {
         clientService.validateRulesWithDraw(transaction, resultClient);
 
         var clientModelNewBalance = clientService.withdraw(resultClient, transaction.getWithDraw());
-        var resultClientModel = clientService.save(clientModelNewBalance);
+        clientService.save(clientModelNewBalance);
         var TransactionHistory =transactionHistoryService.CreateNewHistory(transaction.getWithDraw(), clientModelNewBalance, OperationType.WITHDRAW);
 
         log.debug("PUT withdraw balance updated successfully {}" , TransactionHistory.getTransactionId());
@@ -86,6 +99,12 @@ public class ClientController {
         return ResponseEntity.status(HttpStatus.OK).body("finished withdrawal");
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 200, message = "Ok")
+    })
+    @ApiOperation(value = "deposit function." )
     @RequestMapping(path = "/deposit", method = RequestMethod.PUT, produces = "application/json")
     public ResponseEntity<Object> deposit(@RequestBody @Valid TransactionDeposit transaction){
 
@@ -96,7 +115,7 @@ public class ClientController {
         clientService.validateRulesDeposit(transaction, resultClient);
 
         var clientModelNewBalance = clientService.deposit(resultClient, transaction.getDeposit());
-        var resultClientModel = clientService.save(clientModelNewBalance);
+        clientService.save(clientModelNewBalance);
         var TransactionHistory = transactionHistoryService.CreateNewHistory(transaction.getDeposit(), clientModelNewBalance, OperationType.DEPOSIT);
 
         log.debug("PUT deposit balance updated successfully {}" , TransactionHistory.getTransactionId());
