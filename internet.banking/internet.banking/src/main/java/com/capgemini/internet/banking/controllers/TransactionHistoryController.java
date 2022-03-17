@@ -1,5 +1,6 @@
 package com.capgemini.internet.banking.controllers;
 
+import com.capgemini.internet.banking.dto.SimpleHistoryResponse;
 import com.capgemini.internet.banking.dto.TransactionHistoryDto;
 import com.capgemini.internet.banking.models.TransactionHistoryModel;
 import com.capgemini.internet.banking.services.TransactionHistoryService;
@@ -33,15 +34,27 @@ public class TransactionHistoryController {
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<Object> getHistoryDate(@RequestParam("initDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate initDate,
                                                  @Param("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
-       if(endDate == null ){
-           endDate = initDate.plusDays(1);
-       }
+
+        endDate = historyService.validEndDate(initDate, endDate);
         List<TransactionHistoryModel> resultHistory = historyService.getHistoryByDate(initDate, endDate);
         if (resultHistory.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("History not found.");
         }
         return ResponseEntity.status(HttpStatus.OK).body(resultHistory);
     }
+
+    @RequestMapping(path = "/simpleHistory" ,method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<Object> getHistoryDateSimple(@RequestParam("initDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate initDate,
+                                                                      @Param("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
+        endDate = historyService.validEndDate(initDate, endDate);
+        List<SimpleHistoryResponse> resultHistory = historyService.getHistoryDateSimple(initDate, endDate);
+        if (resultHistory.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("History not found.");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(resultHistory);
+    }
+
+
 
 /*    @PostMapping
     public ResponseEntity<Object> saveClient(@RequestBody @Valid TransactionHistoryDto historyDto){

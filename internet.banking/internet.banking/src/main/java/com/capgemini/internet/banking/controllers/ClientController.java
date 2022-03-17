@@ -83,7 +83,7 @@ public class ClientController {
 
         log.debug("PUT withdraw balance updated successfully {}" , TransactionHistory.getTransactionId());
         log.info("balance updated successfully {}", TransactionHistory.getTransactionId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(resultClientModel);
+        return ResponseEntity.status(HttpStatus.OK).body("finished withdrawal");
     }
 
     @RequestMapping(path = "/deposit", method = RequestMethod.PUT, produces = "application/json")
@@ -101,7 +101,7 @@ public class ClientController {
 
         log.debug("PUT deposit balance updated successfully {}" , TransactionHistory.getTransactionId());
         log.info("balance updated successfully {}", TransactionHistory.getTransactionId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(resultClientModel);
+        return ResponseEntity.status(HttpStatus.OK).body("balance updated successfully");
     }
 
 }

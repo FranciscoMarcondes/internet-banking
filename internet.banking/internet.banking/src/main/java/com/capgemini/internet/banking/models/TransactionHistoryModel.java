@@ -1,16 +1,12 @@
 package com.capgemini.internet.banking.models;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -23,9 +19,6 @@ public class TransactionHistoryModel implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "transactionId", nullable = false)
     private Long transactionId;
-
-/*    @Column(nullable = false)
-    private Long clientId;*/
 
     @Column
     private BigDecimal withdraw;

@@ -1,5 +1,6 @@
 package com.capgemini.internet.banking.services.impl;
 
+import com.capgemini.internet.banking.dto.SimpleHistoryResponse;
 import com.capgemini.internet.banking.enums.OperationType;
 import com.capgemini.internet.banking.models.ClientModel;
 import com.capgemini.internet.banking.models.TransactionHistoryModel;
@@ -7,7 +8,6 @@ import com.capgemini.internet.banking.repositories.TransactionHistoryRepository;
 import com.capgemini.internet.banking.services.TransactionHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,11 +18,6 @@ public class TransactionHistoryImpl implements TransactionHistoryService {
 
     @Autowired
     TransactionHistoryRepository transactionHistoryRepository;
-
-/*    @Override
-    public List<TransactionHistoryModel> geAlltHistoryClients() {
-        return transactionHistoryRepository.geAlltHistoryClients();
-    }*/
 
     @Override
     public TransactionHistoryModel save(TransactionHistoryModel transactionHistoryModel) {
@@ -51,8 +46,16 @@ public class TransactionHistoryImpl implements TransactionHistoryService {
         return transactionHistoryRepository.getHistoryByDate(initDate, endDate);
     }
 
-/*    @Override
-    public Optional<TransactionHistoryModel> findTransactionDate(LocalDateTime date) {
-        return transactionHistoryRepository.findAllByDate();
-    }*/
+    @Override
+    public List<SimpleHistoryResponse> getHistoryDateSimple(LocalDate initDate, LocalDate endDate) {
+        return transactionHistoryRepository.getHistoryByDateSimple(initDate, endDate);
+    }
+
+    @Override
+    public LocalDate validEndDate(LocalDate initDate, LocalDate endDate) {
+        if (endDate == null) {
+            endDate = initDate.plusDays(1);
+        }
+        return endDate;
+    }
 }

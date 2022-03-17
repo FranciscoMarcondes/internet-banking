@@ -1,6 +1,7 @@
 package com.capgemini.internet.banking.repositories;
 
-import com.capgemini.internet.banking.DateQuery;
+import com.capgemini.internet.banking.dto.SimpleHistoryResponse;
+import com.capgemini.internet.banking.querys.DateQuery;
 import com.capgemini.internet.banking.models.TransactionHistoryModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -16,8 +17,6 @@ public interface TransactionHistoryRepository extends JpaRepository <Transaction
     @Query(value= DateQuery.FIND_BY_DATE, nativeQuery = true)
     List<TransactionHistoryModel> getHistoryByDate(@RequestParam("initDate") LocalDate initDate, @Param("endDate") LocalDate endDate);
 
-    /*List<TransactionHistoryModel> geAlltHistoryClients();*/
-
-    /*Optional<TransactionHistoryModel> findAllByDate();*/
-
+    @Query(value= DateQuery.FIND_BY_DATE_SIMPLE, nativeQuery = true)
+    List<SimpleHistoryResponse> getHistoryByDateSimple(@RequestParam("initDate") LocalDate initDate, @Param("endDate") LocalDate endDate);
 }
