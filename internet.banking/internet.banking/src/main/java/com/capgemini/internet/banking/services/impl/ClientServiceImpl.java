@@ -1,13 +1,16 @@
 package com.capgemini.internet.banking.services.impl;
 
-import com.capgemini.internet.banking.dto.TransactionDeposit;
-import com.capgemini.internet.banking.dto.TransactionWithDraw;
+import com.capgemini.internet.banking.dto.TransactionDepositDto;
+import com.capgemini.internet.banking.dto.TransactionWithDrawDto;
 import com.capgemini.internet.banking.models.ClientModel;
 import com.capgemini.internet.banking.repositories.ClientRepository;
 import com.capgemini.internet.banking.services.ClientService;
 import lombok.extern.log4j.Log4j2;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,8 +27,8 @@ public class ClientServiceImpl implements ClientService {
     ClientRepository clientRepository;
 
     @Override
-    public List<ClientModel> findAll() {
-        return clientRepository.findAll();
+    public Page<ClientModel> findAll(Pageable pageable) {
+        return clientRepository.findAll(pageable);
     }
 
     @Override
@@ -86,23 +89,23 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ResponseEntity<Object> getObjectResponseEntityAllClientes(List<ClientModel> resultClients) {
+    public ResponseEntity<Page<ClientModel>> getObjectResponseEntityAllClientes(Page<ClientModel> resultClients) {
             if (resultClients.isEmpty()) {
                 log.info("Clients not found {}");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Clients not found.");
+                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resultClients);
             }
-            return ResponseEntity.status(HttpStatus.OK).body(resultClients);
+             return ResponseEntity.status(HttpStatus.OK).body(resultClients);
     }
 
     @Override
-    public ResponseEntity<Object> validateRulesWithDraw(TransactionWithDraw transaction, Optional<ClientModel> resultClient) {
+    public ResponseEntity<Object> validateRulesWithDraw(TransactionWithDrawDto transaction, Optional<ClientModel> resultClient) {
         if (!resultClient.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found.");
         }
         if (transaction.getWithDraw().compareTo(BigDecimal.ZERO) <= 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect past value.");
         }
-        if (transaction.getWithDraw().compareTo(resultClient.get().getBalance()) > 1) {
+        if (transaction.getWithDraw().compareTo(resultClient.get().getBalance()) >= 1) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("insufficient funds. balance available {} "
                     + resultClient.get().getBalance());
         }
@@ -110,7 +113,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ResponseEntity<Object> validateRulesDeposit(TransactionDeposit transaction, Optional<ClientModel> resultClient) {
+    public ResponseEntity<Object> validateRulesDeposit(TransactionDepositDto transaction, Optional<ClientModel> resultClient) {
         if (!resultClient.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found.");
         }

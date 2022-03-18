@@ -5,13 +5,18 @@ import com.capgemini.internet.banking.models.ClientModel;
 import com.capgemini.internet.banking.models.TransactionHistoryModel;
 import com.capgemini.internet.banking.repositories.TransactionHistoryRepository;
 import com.capgemini.internet.banking.services.TransactionHistoryService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-
+@Log4j2
 @Service
 public class TransactionHistoryImpl implements TransactionHistoryService {
 
@@ -20,14 +25,14 @@ public class TransactionHistoryImpl implements TransactionHistoryService {
 
     @Override
     public TransactionHistoryModel save(TransactionHistoryModel transactionHistoryModel) {
-        return transactionHistoryRepository.save(transactionHistoryModel);
+           return transactionHistoryRepository.save(transactionHistoryModel);
     }
 
     public TransactionHistoryModel CreateNewHistory(BigDecimal value, ClientModel clientModelNewBalance, OperationType operationType) {
+
         var history = new TransactionHistoryModel();
         history.setBalance(clientModelNewBalance.getBalance());
 
-        // Verifica se é saque caso não intendo que é um deposito.
         if (operationType.equals(OperationType.WITHDRAW)) {
             history.setWithdraw(value);
             history.setDeposit(BigDecimal.ZERO);
@@ -41,15 +46,20 @@ public class TransactionHistoryImpl implements TransactionHistoryService {
     }
 
     @Override
-    public List<TransactionHistoryModel> getHistoryByDate(LocalDate initDate, LocalDate endDate) {
-        return transactionHistoryRepository.getHistoryByDate(initDate, endDate);
-    }
+    public ResponseEntity<Page<TransactionHistoryModel>> getHistoryByDate(LocalDate initDate, LocalDate endDate, Pageable pageable) {
+        try {
+            Page<TransactionHistoryModel> resultHistory = transactionHistoryRepository.getHistoryByDate(initDate, endDate,pageable);
+            if (resultHistory.isEmpty()) {
+                log.info("History not found.");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resultHistory);
+            }
+            log.info("search ended");
+            return ResponseEntity.status(HttpStatus.OK).body(resultHistory);
 
-    @Override
-    public LocalDate validEndDate(LocalDate initDate, LocalDate endDate) {
-        if (endDate == null) {
-            endDate = initDate.plusDays(1);
+        } catch (Exception e) {
+            log.debug("getHistoryByDate () - Something unexpected happened.");
+            log.info("Something unexpected happened.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        return endDate;
     }
 }
