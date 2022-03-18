@@ -1,5 +1,7 @@
 package com.capgemini.internet.banking.service;
 
+import com.capgemini.internet.banking.dto.TransactionDepositDto;
+import com.capgemini.internet.banking.dto.TransactionWithDrawDto;
 import com.capgemini.internet.banking.models.ClientModel;
 import com.capgemini.internet.banking.repositories.ClientRepository;
 import com.capgemini.internet.banking.services.ClientService;
@@ -15,6 +17,7 @@ import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -136,7 +139,6 @@ public class ClientServiceImplTest {
         model.setBirthData(LocalDate.now());
         model.setName("teste");
         model.setExclusivePlan(false);
-
         Optional<ClientModel> optional = Optional.of(model);
         ClientModel result = clientService.withdraw(optional, new BigDecimal(400));
         assertTrue(result.getBalance().compareTo(new BigDecimal(60)) == 0);
@@ -158,8 +160,60 @@ public class ClientServiceImplTest {
     }
 
     @Test
-    public void validateRulesWithDraw (){
+    public void validateRulesWithDrawTest (){
+        ClientModel model = new ClientModel();
+        model.setClientId(1L);
+        model.setBalance(new BigDecimal(500));
+        model.setAccount("12345");
+        model.setBirthData(LocalDate.now());
+        model.setName("teste");
+        model.setExclusivePlan(false);
+        Optional<ClientModel> optional = Optional.of(model);
+        TransactionWithDrawDto dto = new TransactionWithDrawDto();
+        dto.setClientId(1L);
+        dto.setWithDraw(BigDecimal.ZERO);
 
+        ResponseEntity<Object> result = clientService.validateRulesWithDraw(dto, optional);
+        assertEquals(result.getStatusCode().value(), 400);
+
+        dto.setWithDraw(new BigDecimal(700));
+        assertEquals(result.getStatusCode().value(), 400);
     }
 
+    @Test
+    public void validateRulesWithDrawNullTeste (){
+        TransactionWithDrawDto dto = new TransactionWithDrawDto();
+        Optional<ClientModel> optional = Optional.empty();
+        dto.setClientId(1L);
+        dto.setWithDraw(BigDecimal.ZERO);
+        ResponseEntity<Object> result = clientService.validateRulesWithDraw(dto, optional);
+        assertEquals(result.getStatusCode().value(), 404);
+    }
+
+    @Test
+    public void validateRulesDepositNullTest (){
+        TransactionDepositDto dto = new TransactionDepositDto();
+        Optional<ClientModel> optional = Optional.empty();
+        dto.setClientId(1L);
+        dto.setDeposit(BigDecimal.ZERO);
+        ResponseEntity<Object> result = clientService.validateRulesDeposit(dto, optional);
+        assertEquals(result.getStatusCode().value(), 404);
+    }
+
+    @Test
+    public void validateRulesDepositLessThanZeroTest(){
+        ClientModel model = new ClientModel();
+        model.setClientId(1L);
+        model.setBalance(new BigDecimal(500));
+        model.setAccount("12345");
+        model.setBirthData(LocalDate.now());
+        model.setName("teste");
+        model.setExclusivePlan(false);
+        TransactionDepositDto dto = new TransactionDepositDto();
+        Optional<ClientModel> optional = Optional.of(model);
+        dto.setClientId(1L);
+        dto.setDeposit(new BigDecimal(-1));
+        ResponseEntity<Object> result = clientService.validateRulesDeposit(dto, optional);
+        assertEquals(result.getStatusCode().value(), 400);
+    }
 }
