@@ -46,7 +46,7 @@ public class TransactionHistoryController {
         log.debug("GET, getHistoryDate() ");
         log.info("searching all histories by date");
         if (endDate == null) {
-            endDate = initDate.plusDays(1);
+            endDate = LocalDate.now();
         } else if (endDate.isBefore(initDate)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }

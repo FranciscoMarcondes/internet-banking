@@ -2851,3 +2851,9 @@ SELEC * FROM TB_CLIENT [42001-200]
 2022-03-19 11:25:29 jdbc[13]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELEC[*] * FROM TB_CLIENT"; expected "SET, SAVEPOINT, SCRIPT, SHUTDOWN, SHOW"; SQL statement:
 SELEC * FROM TB_CLIENT [42001-200]
+2022-03-19 16:36:23 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM TB_TRANSACTION WHERE TRANSACTION_DATE  BETWEEN   '2022-03-19'[*]"; expected "[, ::, AT, FORMAT, *, /, %, +, -, ||, ~, !~, AND"; SQL statement:
+SELECT * FROM TB_TRANSACTION where TRANSACTION_DATE  BETWEEN   '2022-03-19' [42001-200]
+2022-03-19 16:36:25 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM TB_TRANSACTION WHERE TRANSACTION_DATE  BETWEEN   '2022-03-19'[*]"; expected "[, ::, AT, FORMAT, *, /, %, +, -, ||, ~, !~, AND"; SQL statement:
+SELECT * FROM TB_TRANSACTION where TRANSACTION_DATE  BETWEEN   '2022-03-19' [42001-200]

@@ -41,7 +41,7 @@ public class TransactionHistoryImpl implements TransactionHistoryService {
             history.setWithdraw(BigDecimal.ZERO);
             history.setDeposit(value);
         }
-        history.setTransactionDate(LocalDateTime.now());
+        history.setTransactionDate(LocalDate.now());
         history.setClient(clientModelNewBalance);
         return save(history);
     }
