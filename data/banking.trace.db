@@ -2713,3 +2713,141 @@ SELECT * FROM TB_TRANSACTION where TRANSACTION_DATE BETWEEN ? and ? order by tra
 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.base/java.lang.Thread.run(Thread.java:834)
+2022-03-19 10:58:09 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "TB_CLIENT[*]"; expected "TRUNCATE"; SQL statement:
+TB_CLIENT [42001-200]
+2022-03-19 11:06:38 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "INSERT INTO TB_CLIENT (ACCOUNT, BALANCE, BIRTH_DATA, EXCLUSIVE_PLAN, NAME, CLIENT_ID) VALUES ('123456', 1000, '1990-01-01', TRUE, TESTE 01[*], 3)"; expected "(, ., [, ::, AT, FORMAT, *, /, %, +, -, ||, ~, !~, NOT, LIKE, ILIKE, REGEXP, IS, IN, BETWEEN, AND, OR, ,, )"; SQL statement:
+insert into tb_client (account, balance, birth_data, exclusive_plan, name, client_id) values ('123456', 1000, '1990-01-01', true, Teste 01, 3) [42001-200]
+2022-03-19 11:07:16 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Column "123456" not found; SQL statement:
+insert into tb_client (account, balance, birth_data, exclusive_plan, name, client_id) values ("123456", 1000, "1990-01-01", true, "Teste 01", 3) [42122-200]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:453)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:429)
+	at org.h2.message.DbException.get(DbException.java:205)
+	at org.h2.message.DbException.get(DbException.java:181)
+	at org.h2.expression.ExpressionColumn.getColumnException(ExpressionColumn.java:163)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:145)
+	at org.h2.command.dml.Insert.prepare(Insert.java:327)
+	at org.h2.command.Parser.prepareCommand(Parser.java:744)
+	at org.h2.engine.Session.prepareLocal(Session.java:657)
+	at org.h2.engine.Session.prepareCommand(Session.java:595)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1235)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:212)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:201)
+	at org.h2.server.web.WebApp.getResult(WebApp.java:1459)
+	at org.h2.server.web.WebApp.query(WebApp.java:1116)
+	at org.h2.server.web.WebApp.query(WebApp.java:1092)
+	at org.h2.server.web.WebApp.process(WebApp.java:241)
+	at org.h2.server.web.WebApp.processRequest(WebApp.java:173)
+	at org.h2.server.web.WebServlet.doGet(WebServlet.java:129)
+	at org.h2.server.web.WebServlet.doPost(WebServlet.java:166)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:681)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:764)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:540)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:359)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:889)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1735)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+2022-03-19 11:15:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT *  FROM TB_TRANSACTION 
+SELECT[*] * FROM  TB_CLIENT 
+
+
+INSERT INTO TB_TRANSACTION (TRANSACTION_ID , BALANCE , DEPOSIT , TRANSACTION_DATE , WITHDRAW , CLIENT_CLIENT_ID ) VALUES (1, 1000, 0, '2022-03-19', 10)"; SQL statement:
+SELECT *  FROM TB_TRANSACTION 
+SELECT * FROM  TB_CLIENT 
+
+
+insert into TB_TRANSACTION (TRANSACTION_ID , BALANCE , DEPOSIT , TRANSACTION_DATE , WITHDRAW , CLIENT_CLIENT_ID ) values (1, 1000, 0, '2022-03-19', 10) [42000-200]
+2022-03-19 11:18:06 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Cannot drop "TB_CLIENT" because "FK6B0JCLNQHMSYB74L5VJL9KACE" depends on it; SQL statement:
+DROP TABLE TB_CLIENT [90107-200]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:576)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:429)
+	at org.h2.message.DbException.get(DbException.java:205)
+	at org.h2.command.ddl.DropTable.prepareDrop(DropTable.java:98)
+	at org.h2.command.ddl.DropTable.update(DropTable.java:124)
+	at org.h2.command.CommandContainer.update(CommandContainer.java:198)
+	at org.h2.command.Command.executeUpdate(Command.java:251)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:228)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:201)
+	at org.h2.server.web.WebApp.getResult(WebApp.java:1459)
+	at org.h2.server.web.WebApp.query(WebApp.java:1116)
+	at org.h2.server.web.WebApp.query(WebApp.java:1092)
+	at org.h2.server.web.WebApp.process(WebApp.java:241)
+	at org.h2.server.web.WebApp.processRequest(WebApp.java:173)
+	at org.h2.server.web.WebServlet.doGet(WebServlet.java:129)
+	at org.h2.server.web.WebServlet.doPost(WebServlet.java:166)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:681)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:764)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:540)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:359)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:889)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1735)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+2022-03-19 11:25:24 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELEC[*] * FROM TB_CLIENT"; expected "SET, SAVEPOINT, SCRIPT, SHUTDOWN, SHOW"; SQL statement:
+SELEC * FROM TB_CLIENT [42001-200]
+2022-03-19 11:25:28 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELEC[*] * FROM TB_CLIENT"; expected "SET, SAVEPOINT, SCRIPT, SHUTDOWN, SHOW"; SQL statement:
+SELEC * FROM TB_CLIENT [42001-200]
+2022-03-19 11:25:29 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELEC[*] * FROM TB_CLIENT"; expected "SET, SAVEPOINT, SCRIPT, SHUTDOWN, SHOW"; SQL statement:
+SELEC * FROM TB_CLIENT [42001-200]

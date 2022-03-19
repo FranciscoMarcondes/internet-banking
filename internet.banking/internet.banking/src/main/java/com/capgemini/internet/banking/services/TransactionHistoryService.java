@@ -12,6 +12,6 @@ import java.time.LocalDate;
 
 public interface TransactionHistoryService {
     TransactionHistoryModel save(TransactionHistoryModel transactionHistoryModel);
-    TransactionHistoryModel CreateNewHistory(BigDecimal value, ClientModel clientModelNewBalance, OperationType operationType);
+    TransactionHistoryModel createNewHistory(BigDecimal value, ClientModel clientModelNewBalance, OperationType operationType);
     ResponseEntity<Page<TransactionHistoryModel>> getHistoryByDate(LocalDate initDate, LocalDate endDate, Pageable pageable);
 }

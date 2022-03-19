@@ -20,22 +20,22 @@ public class ClientDto {
 
     private Long clientId;
 
-    @NotBlank
-    @Size(min = 3, max = 100)
+    @NotBlank(message = "the name field cannot be empty")
+    @Size(min = 3, max = 100, message = "The field must be at least 3 to 100 characters")
     private String name;
 
-    @NotNull
+    @NotNull(message = "the exclusivePlan must be true or false")
     private Boolean exclusivePlan;
 
-    @NotNull
-    @Min(value = 0)
+    @NotNull(message = "the balance field cannot be null")
+    @Min(value = 0, message = "invalid value, negative values are not allowed")
     private BigDecimal balance;
 
-    @NotBlank
-    @Size(min = 3, max = 7)
+    @NotBlank(message = "the account field cannot be empty")
+    @Size(min = 3, max = 7, message = "The account field must contain between 3 and 7 characters")
     private String account;
 
-    @NotNull
+    @NotNull(message = "the birthData field cannot be null")
     @DateTimeFormat(pattern="yyyy-MM-dd")
     private LocalDate birthData;
 }

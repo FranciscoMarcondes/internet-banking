@@ -13,10 +13,10 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class TransactionWithDrawDto {
 
-    @NotNull
+    @NotNull(message = "the clientId field cannot be null")
     private Long clientId;
 
-    @NotNull
+    @NotNull(message = "the withDraw field cannot be null")
     @Min(value = 0)
     private BigDecimal withDraw;
 }

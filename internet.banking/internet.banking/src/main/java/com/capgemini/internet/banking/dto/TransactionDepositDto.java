@@ -13,10 +13,10 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class TransactionDepositDto {
 
-    @NotNull
+    @NotNull(message = "the clientId field cannot be null")
     private Long clientId;
 
-    @NotNull
-    @Min(value = 0)
+    @NotNull(message = "the deposit field cannot be null")
+    @Min(value = 0, message = "invalid value, negative values are not allowed")
     private BigDecimal deposit;
 }

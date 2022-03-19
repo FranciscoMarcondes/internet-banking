@@ -19,27 +19,21 @@ public class SwaggerConfig {
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
+                .groupName("Internet Banking")
+                .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.any())
+                .apis(RequestHandlerSelectors.basePackage("com.capgemini.internet.banking"))
                 .paths(PathSelectors.any())
                 .build();
     }
 
-/*    private ApiInfo metaData() {
-        return new ApiInfoBuilder()
-                .title("REST API - Internet Banking")
-                .description("\"REST API, Desafio backend \"")
-                .version("1.0.0")
-                .license("Capgemini Brasil")
+    private ApiInfo apiInfo() {
+        return new ApiInfoBuilder().title("Internet Banking API")
+                .description("Desafio java backend")
+                .termsOfServiceUrl("https://www.capgemini.com/br-pt/")
+                .license("Capgemini License")
+                .licenseUrl("https://www.capgemini.com/br-pt/")
+                .version("1.0")
                 .build();
-    }*/
-
-/*    @Override
-    protected void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("swagger-ui.html")
-                .addResourceLocations("classpath:/META-INF/resources/");
-
-        registry.addResourceHandler("/webjars/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/");
-    }*/
+    }
 }

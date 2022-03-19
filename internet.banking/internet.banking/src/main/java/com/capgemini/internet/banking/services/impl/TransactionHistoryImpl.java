@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,10 +26,10 @@ public class TransactionHistoryImpl implements TransactionHistoryService {
 
     @Override
     public TransactionHistoryModel save(TransactionHistoryModel transactionHistoryModel) {
-           return transactionHistoryRepository.save(transactionHistoryModel);
+        return transactionHistoryRepository.save(transactionHistoryModel);
     }
 
-    public TransactionHistoryModel CreateNewHistory(BigDecimal value, ClientModel clientModelNewBalance, OperationType operationType) {
+    public TransactionHistoryModel createNewHistory(BigDecimal value, ClientModel clientModelNewBalance, OperationType operationType) {
 
         var history = new TransactionHistoryModel();
         history.setBalance(clientModelNewBalance.getBalance());
@@ -48,7 +49,7 @@ public class TransactionHistoryImpl implements TransactionHistoryService {
     @Override
     public ResponseEntity<Page<TransactionHistoryModel>> getHistoryByDate(LocalDate initDate, LocalDate endDate, Pageable pageable) {
         try {
-            Page<TransactionHistoryModel> resultHistory = transactionHistoryRepository.getHistoryByDate(initDate, endDate,pageable);
+            Page<TransactionHistoryModel> resultHistory = transactionHistoryRepository.getHistoryByDate(initDate, endDate, pageable);
             if (resultHistory.isEmpty()) {
                 log.info("History not found.");
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resultHistory);

@@ -24,7 +24,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Optional;
 
 @Log4j2
@@ -47,13 +46,13 @@ public class ClientController {
             @ApiResponse(code = 200, message = "Ok"),
     })
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<Page<ClientModel>> getAllClients( @PageableDefault(page = 0, size = 10, sort = "clientId",
-            direction = Sort.Direction.ASC) Pageable pageable) {
+    public ResponseEntity<Page<ClientModel>> getAllClients(@PageableDefault(page = 0,
+            size = 10, sort = "clientId", direction = Sort.Direction.ASC) Pageable pageable) {
 
         log.debug("Get, getAllClients, looking for all clients {}");
         Page<ClientModel> resultClients = null;
         resultClients = clientService.findAll(pageable);
-        return  clientService.getObjectResponseEntityAllClientes(resultClients);
+        return clientService.getObjectResponseEntityAllClientes(resultClients);
     }
 
     @ApiOperation(value = "find one client by id.")
@@ -62,7 +61,7 @@ public class ClientController {
             @ApiResponse(code = 200, message = "Ok")
     })
     @RequestMapping(value = "/{clientId}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<Object> getOneClient(@PathVariable(value = "clientId") Long clientId){
+    public ResponseEntity<Object> getOneClient(@PathVariable(value = "clientId") Long clientId) {
         log.debug("Get, getOneClient, looking for one client {}");
         Optional<ClientModel> clientModelOptional = clientService.findByid(clientId);
         return clientService.validAndGetResponseEntityOneClient(clientModelOptional);
@@ -74,7 +73,7 @@ public class ClientController {
             @ApiResponse(code = 201, message = "Created")
     })
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
-    public ResponseEntity<Object> saveClient(@RequestBody @Valid ClientDto clientDto){
+    public ResponseEntity<Object> saveClient(@RequestBody @Valid ClientDto clientDto) {
 
         log.debug("POST saveClient clientDto received {} ", clientDto.toString());
         var clientModel = new ClientModel();
@@ -106,12 +105,14 @@ public class ClientController {
 
             Optional<ClientModel> resultClient = clientService.findByid(transaction.getClientId());
             var validateRulesWithDraw = clientService.validateRulesWithDraw(transaction, resultClient);
-            if ( validateRulesWithDraw != null ){return validateRulesWithDraw;}
+            if (validateRulesWithDraw != null) {
+                return validateRulesWithDraw;
+            }
 
             var clientModelNewBalance = clientService.withdraw(resultClient, transaction.getWithDraw());
             clientService.save(clientModelNewBalance);
 
-            var TransactionHistory = transactionHistoryService.CreateNewHistory(transaction.getWithDraw(), clientModelNewBalance, OperationType.WITHDRAW);
+            var TransactionHistory = transactionHistoryService.createNewHistory(transaction.getWithDraw(), clientModelNewBalance, OperationType.WITHDRAW);
             log.debug("PUT withdraw balance updated successfully {}", TransactionHistory.getTransactionId());
             log.info("balance updated successfully {}", TransactionHistory.getTransactionId());
             return ResponseEntity.status(HttpStatus.OK).body("finished withdrawal");
@@ -128,9 +129,9 @@ public class ClientController {
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 200, message = "Ok")
     })
-    @ApiOperation(value = "deposit function." )
+    @ApiOperation(value = "deposit function.")
     @RequestMapping(path = "/deposit", method = RequestMethod.PUT, produces = "application/json")
-    public ResponseEntity<Object> deposit(@RequestBody @Valid TransactionDepositDto transaction){
+    public ResponseEntity<Object> deposit(@RequestBody @Valid TransactionDepositDto transaction) {
 
         log.debug("POST deposit client {} ", transaction.getClientId());
         log.info("Checking client ", transaction.getClientId());
@@ -138,14 +139,16 @@ public class ClientController {
         Optional<ClientModel> resultClient = clientService.findByid(transaction.getClientId());
 
         var validateRulesDeposit = clientService.validateRulesDeposit(transaction, resultClient);
-        if (validateRulesDeposit != null){return validateRulesDeposit;}
+        if (validateRulesDeposit != null) {
+            return validateRulesDeposit;
+        }
 
         var clientModelNewBalance = clientService.deposit(resultClient, transaction.getDeposit());
 
         try {
             clientService.save(clientModelNewBalance);
-            var TransactionHistory = transactionHistoryService.CreateNewHistory(transaction.getDeposit(), clientModelNewBalance, OperationType.DEPOSIT);
-            log.debug("PUT deposit balance updated successfully {}" , TransactionHistory.getTransactionId());
+            var TransactionHistory = transactionHistoryService.createNewHistory(transaction.getDeposit(), clientModelNewBalance, OperationType.DEPOSIT);
+            log.debug("PUT deposit balance updated successfully {}", TransactionHistory.getTransactionId());
             log.info("balance updated successfully {}", TransactionHistory.getTransactionId());
             return ResponseEntity.status(HttpStatus.OK).body("balance updated successfully");
         } catch (HibernateException exception) {

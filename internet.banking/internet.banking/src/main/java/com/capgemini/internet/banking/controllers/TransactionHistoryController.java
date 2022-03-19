@@ -39,7 +39,7 @@ public class TransactionHistoryController {
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<Page<TransactionHistoryModel>> getHistoryDate(
             @PageableDefault(page = 0, size = 10, sort = "TRANSACTION_DATE",
-            direction = Sort.Direction.ASC) Pageable pageable,
+                    direction = Sort.Direction.ASC) Pageable pageable,
             @RequestParam("initDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate initDate,
             @Param("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
 
